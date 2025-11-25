@@ -1,0 +1,92 @@
+import streamlit as st
+import matplotlib.pyplot as plt
+import numpy as np
+
+# 1. Konfigurasi Halaman
+st.set_page_config(
+    page_title="Virtual Lab Lingkaran Interaktif",
+    layout="wide"
+)
+
+st.title("🧪 Virtual Lab Matematika: Rumus Lingkaran")
+st.markdown("Gunakan sidebar untuk mengubah jari-jari dan lihat perubahan keliling dan luas secara real-time!")
+
+# --- Sidebar untuk Input Interaktif ---
+st.sidebar.header("📐 Pengaturan Lingkaran")
+
+# Slider untuk Jari-Jari (r)
+r = st.sidebar.slider(
+    "Pilih Jari-Jari (r) dalam satuan cm:",
+    min_value=1.0,
+    max_value=10.0,
+    value=5.0,
+    step=0.5
+)
+
+# Pilihan untuk menampilkan rumus
+tampilkan_rumus = st.sidebar.checkbox("Tampilkan Rumus yang Digunakan", True)
+
+# Konstanta Pi
+pi = np.pi
+
+# --- Perhitungan ---
+d = 2 * r          # Diameter
+K = 2 * pi * r     # Keliling
+L = pi * (r ** 2)  # Luas
+
+# --- Bagian Visualisasi (Kolom Kiri) ---
+col1, col2 = st.columns(2)
+
+with col1:
+    st.header("🖼️ Visualisasi Lingkaran")
+
+    # Membuat plot lingkaran
+    fig, ax = plt.subplots(figsize=(6, 6))
+    
+    # Menggambar Lingkaran
+    circle = plt.Circle((0, 0), r, color='skyblue', fill=True, alpha=0.5)
+    ax.add_artist(circle)
+    
+    # Menggambar Jari-Jari (r)
+    ax.plot([0, r], [0, 0], 'r--', label='Jari-Jari (r)')
+    ax.text(r/2, 0.5, f'$r = {r}$', color='red')
+    
+    # Pengaturan sumbu agar terlihat seperti lingkaran sempurna
+    ax.set_xlim(-11, 11)
+    ax.set_ylim(-11, 11)
+    ax.set_aspect('equal', adjustable='box')
+    ax.set_title(f"Lingkaran dengan r = {r} cm")
+    ax.set_xlabel("Sumbu X")
+    ax.set_ylabel("Sumbu Y")
+    
+    st.pyplot(fig)
+
+# --- Bagian Hasil Perhitungan (Kolom Kanan) ---
+with col2:
+    st.header("✨ Hasil Perhitungan")
+
+    # Tampilan Hasil
+    st.metric(label="Jari-Jari ($r$)", value=f"{r:.2f} cm")
+    st.metric(label="Diameter ($d$ = 2r)", value=f"{d:.2f} cm")
+    st.metric(label="Keliling ($K$)", value=f"{K:.2f} cm", help="Jarak mengelilingi tepi lingkaran")
+    st.metric(label="Luas ($L$)", value=f"{L:.2f} cm²", help="Area di dalam lingkaran")
+
+    st.markdown("---")
+
+    # Penjelasan Rumus (jika diaktifkan)
+    if tampilkan_rumus:
+        st.subheader("💡 Rumus Matematika")
+        st.latex(r"d = 2 \times r")
+        st.markdown("**Diameter** ($d$) adalah dua kali **jari-jari** ($r$).")
+        st.latex(r"K = 2 \times \pi \times r \quad \text{atau} \quad K = \pi \times d")
+        st.markdown("**Keliling** ($K$) menggunakan **konstanta Pi** ($\pi \approx 3.14159$).")
+        st.latex(r"L = \pi \times r^2")
+        st.markdown("**Luas** ($L$) adalah Pi dikalikan dengan **kuadrat** jari-jari.")
+
+st.markdown("""
+---
+## 📝 Eksplorasi Siswa
+
+* **Apa yang terjadi** pada Keliling dan Luas jika Jari-Jari diubah dari 2 menjadi 4?
+* **Hitunglah** perbandingan perubahan Luasnya! (Jawab: $4^2 / 2^2 = 16/4 = 4$ kali lebih besar!)
+""")
